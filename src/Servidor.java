@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Servidor {
     private static final int PORT = 5005; // Porta do servidor
-    private static final String PASTASERVIDOR = "src" + File.separator + "arquivos"; // Local onde os arquivos serão salvos
+    private static final String PASTASERVIDOR = "src" + File.separator + "dados"; // Local onde os dados serão salvos
 
 
     public static void main(String[] args) throws Exception {
-        // Cria o local de  arquivos, se ele não existir
+        // Cria o local de  dados, se ele não existir
         File file = new File(PASTASERVIDOR);
         file.getParentFile().mkdirs(); //Garante que a pasta eixsta
         file.createNewFile(); // Cria o arquivo se ele não existir
@@ -42,36 +42,34 @@ public class Servidor {
             String comando;
             while ((comando = reader.readLine()) != null) {
                 //Adicionando pontos de coleta
-                if (comando.contains("ADICIONAR")) {
+                if (comando.startsWith("ADICIONAR")) {
                     try (FileWriter fwq = new FileWriter(PASTASERVIDOR, true)) {
-                        fwq.write(comando.substring(4) + "\n");
+                        fwq.write(comando.substring(10) + "\n");
                     }
                     saida.println("Ponto de coleta adicionado com sucesso.");
                     
-                } else if(comando.contains("PESQUISA")) {
-                    // Busca por nome
-                    String nomeBusca = comando.substring(7).trim();
-                    boolean encontrado = false;
-                    try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))){
-                        String linha;
-                        while ((linha = fileReader.readLine()) != null) {
-                            if (linha.contains(nomeBusca)) {
-                                saida.println(linha);
-                                encontrado = true;
-                                break;
-                            }
-                        }
-
-                    } if (!encontrado) saida.println("Ponto não cadastrado ou não existente.");
+                } else if (comando.startsWith("PESQUISAR")) {
+                String nomeBusca = comando.substring(10).trim();
+                boolean encontrado = false;
+                try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) {
+                String linha;
+                while ((linha = fileReader.readLine()) != null) {
+                if (linha.startsWith(nomeBusca + ";")) {
+                saida.println(linha);
+                encontrado = true;
+            }
+        }
+    }
+    if (!encontrado) saida.println("Ponto não cadastrado ou não existente.");
                 
-            } else if(comando.equals("LISTA")){
+            } else if(comando.equals("LISTAR")){
                 //Faz uma lista com todos os pontos cadastrados
                 try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) {
                     String linha;
                     while ((linha = fileReader.readLine()) != null) {
                         saida.println(linha);
                     }
-                } saida.println("Fim do arquivo.");
+                } saida.println("EOF");
             } else {
                     saida.println("Comando inválido.");
                 }

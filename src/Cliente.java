@@ -15,52 +15,54 @@ public class Cliente {
 
         // Menu interativo
         while (true) {
-            System.out.println("\n1. Enviar arquivo\n2. Listar arquivos\n3. Baixar arquivo\n4. Sair");
+            System.out.println("\n=== Menu EcoLeta ===");
+            System.out.println("\n1. Cadastrar ponto de coleta");
+            System.out.println("2. Consultar ponto por nome");
+            System.out.println("3. Listar todos os pontos");
+            System.out.println("4. Sair");
             String opcao = scanner.nextLine();
 
-            // Envio de arquivo
             if (opcao.equals("1")) {
-                System.out.print("Nome do arquivo local: ");
-                String filename = scanner.nextLine();
-                File file = new File(filename);
-                if (!file.exists()) {
-                    System.out.println("Arquivo não encontrado.");
-                    continue;
-                }
+                System.out.print("Nome do posto de coleta (preferencia minusculo): ");
+                String nome = scanner.nextLine();
+                System.out.print("Endereço do posto de coleta: ");
+                String endereco = scanner.nextLine();
+                System.out.print("Materiais aceitos (separar por virgula): ");
+                String materiais = scanner.nextLine();
+                saida.println("ADICIONAR " + nome + ";" + endereco + ";" + materiais);
+                System.out.println(entrada.readLine());
 
-                // Envia comando e conteúdo do arquivo
-                saida.println("UPLOAD " + file.getName());
-                FileInputStream fis = new FileInputStream(file);
-                int tamRead;
-                while ((tamRead = fis.read()) != -1) {
-                    socket.getOutputStream().write(tamRead);
-                }
-                socket.getOutputStream().write(0); // EOF personalizado
-                fis.close();
-                System.out.println(entrada.readLine()); // Confirmação do servidor
-
-            // Listagem de arquivos
             } else if (opcao.equals("2")) {
-                saida.println("LIST");
-                String line;
-                while (!(line = entrada.readLine()).equals("EOF")) {
-                    System.out.println("- " + line);
-                }
+                System.out.print("Nome do ponto (necessario que o ponto esteja escrito corretamente): ");
+                String nome = scanner.nextLine();
+                saida.println("PESQUISAR " + nome);
+                String resposta = entrada.readLine();
+                System.err.println("\nResultado da busca:\n");
+                if (resposta.startsWith(nome + ";")) {
+                    String [] dados = resposta.split(";");
+                    System.out.println("Nome: " + dados[0]);
+                    System.out.println("Endereço: " + dados[1]);
+                    System.out.println("Materiais aceitos: " + dados[2]);
+                    System.out.println("------------------------" );
+                } else {
+                    System.out.println("Ponto de coleta não encontrado.");
+                }   
 
-            // Download de arquivo
             } else if (opcao.equals("3")) {
-                System.out.print("Nome do arquivo para baixar: ");
-                String filename = scanner.nextLine();
-                saida.println("DOWNLOAD " + filename);
-                FileOutputStream fos = new FileOutputStream("download_" + filename);
-                int tamRead;
-                while ((tamRead = socket.getInputStream().read()) != 0) {
-                    fos.write(tamRead);
-                }
-                fos.close();
-                System.out.println("Arquivo baixado com sucesso.");
+                saida.println("LISTAR");
+                System.out.println("\nLista de pontos de coleta:\n");
 
-            // Encerrar conexão
+                String linha;
+                int cont = 1;
+                while (!(linha = entrada.readLine()).equals("EOF")) {
+                    String[] dados = linha.split(";");
+                    System.out.println("Ponto #" + cont++);
+                    System.out.println("Nome: " + dados[0]);
+                    System.out.println("Endereço: " + dados[1]);
+                    System.out.println("Materiais aceitos: " + dados[2]);
+                    System.out.println("------------------------" );
+                }
+
             } else if (opcao.equals("4")) {
                 socket.close();
                 break;
