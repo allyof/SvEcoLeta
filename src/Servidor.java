@@ -4,17 +4,18 @@ import java.util.*;
 
 public class Servidor {
     private static final int PORT = 5005; // Porta do servidor
-    private static final String SERVERID = "src" + File.separator + "arquivos"; // Local onde os arquivos serão salvos
+    private static final String PASTASERVIDOR = "src" + File.separator + "arquivos"; // Local onde os arquivos serão salvos
 
 
     public static void main(String[] args) throws Exception {
         // Cria o local de  arquivos, se ele não existir
-        File dir = new File(SERVERID);
-        if (!dir.exists()) dir.mkdirs();
+        File file = new File(PASTASERVIDOR);
+        file.getParentFile().mkdirs(); //Garante que a pasta eixsta
+        file.createNewFile(); // Cria o arquivo se ele não existir
 
         // Conecta no servidor
         ServerSocket serverSocket = new ServerSocket(PORT);
-        System.out.println("Conectado");
+        System.out.println("Conectado ao EcoLeta");
 
         // Loop infinito para aceitar múltiplas conexões de clientes
         while (true) {
@@ -40,44 +41,38 @@ public class Servidor {
         ) {
             String comando;
             while ((comando = reader.readLine()) != null) {
-                // LIST: envia a lista de arquivos disponíveis
-                if (comando.equals("LIST")) {
-                    File[] files = new File(SERVERID).listFiles();
-                    for (File file : files) {
-                        saida.println(file.getName());
+                //Adicionando pontos de coleta
+                if (comando.contains("ADICIONAR")) {
+                    try (FileWriter fwq = new FileWriter(PASTASERVIDOR, true)) {
+                        fwq.write(comando.substring(4) + "\n");
                     }
-                    saida.println("EOF"); // Marca o fim da lsita
-
-                // UPLOAD <nome>: envia os arquivos do cliente para o servidor
-                } else if (comando.startsWith("UPLOAD")) {
-                    String filename = comando.split(" ")[1];
-                    FileOutputStream fos = new FileOutputStream(SERVERID + File.separator + filename);
-                    int tamRead;
-                    while ((tamRead = socket.getInputStream().read()) != -1) {
-                        if (tamRead == 0) break; // fim do arquivo personalizado
-                        fos.write(tamRead);
-                    }
-                    fos.close();
-                    saida.println("Arquivo recebido com sucesso");
-
-                // DOWNLOAD <nome>: cliente baixa o arquivo ja armazenado
-                } else if (comando.startsWith("DOWNLOAD")) {
-                    String filename = comando.split(" ")[1];
-                    File file = new File(SERVERID + File.separator + filename);
-                    if (file.exists()) {
-                        FileInputStream fis = new FileInputStream(file);
-                        int tamRead;
-                        while ((tamRead = fis.read()) != -1) {
-                            socket.getOutputStream().write(tamRead);
+                    saida.println("Ponto de coleta adicionado com sucesso.");
+                    
+                } else if(comando.contains("PESQUISA")) {
+                    // Busca por nome
+                    String nomeBusca = comando.substring(7).trim();
+                    boolean encontrado = false;
+                    try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))){
+                        String linha;
+                        while ((linha = fileReader.readLine()) != null) {
+                            if (linha.contains(nomeBusca)) {
+                                saida.println(linha);
+                                encontrado = true;
+                                break;
+                            }
                         }
-                        socket.getOutputStream().write(0); // fim do arquivo personalizado
-                        fis.close();
-                    } else {
-                        saida.println("Arquivo não encontrado.");
-                    }
 
-                // Comando inválido
-                } else {
+                    } if (!encontrado) saida.println("Ponto não cadastrado ou não existente.");
+                
+            } else if(comando.equals("LISTA")){
+                //Faz uma lista com todos os pontos cadastrados
+                try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) {
+                    String linha;
+                    while ((linha = fileReader.readLine()) != null) {
+                        saida.println(linha);
+                    }
+                } saida.println("Fim do arquivo.");
+            } else {
                     saida.println("Comando inválido.");
                 }
             }
