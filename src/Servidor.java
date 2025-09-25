@@ -48,34 +48,34 @@ public class Servidor {
                     }
                     saida.println("Ponto de coleta adicionado com sucesso.");
                     
-                } else if (comando.startsWith("PESQUISAR")) {
+                } else if (comando.startsWith("PESQUISAR")) { //Busca por nome
                 String nomeBusca = comando.substring(10).trim();
                 boolean encontrado = false;
-                try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) {
+                try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) { //Lê o arquivo de dados
                 String linha;
                 while ((linha = fileReader.readLine()) != null) {
-                if (linha.startsWith(nomeBusca + ";")) {
+                if (linha.startsWith(nomeBusca + ";")) { //Verifica se o nome do ponto bate com o nome buscado
                 saida.println(linha);
                 encontrado = true;
             }
         }
     }
-    if (!encontrado) saida.println("Ponto não cadastrado ou não existente.");
+    if (!encontrado) saida.println("Ponto não cadastrado ou não existente."); //Mensagem de erro caso o ponto não seja encontrado
                 
             } else if(comando.equals("LISTAR")){
                 //Faz uma lista com todos os pontos cadastrados
-                try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) {
+                try (BufferedReader fileReader = new BufferedReader(new FileReader(PASTASERVIDOR))) { //Lê o arquivo de dados
                     String linha;
                     while ((linha = fileReader.readLine()) != null) {
                         saida.println(linha);
                     }
-                } saida.println("EOF");
+                } saida.println("EOF"); //Marca o fim da lista
             } else {
-                    saida.println("Comando inválido.");
+                    saida.println("Comando inválido."); //Mensagem de erro para comando inválido
                 }
             }
         } catch (IOException e) {
-            System.out.println("Erro ao lidar com cliente: " + e.getMessage());
+            System.out.println("Erro ao lidar com cliente: " + e.getMessage()); //Mensagem de erro
         }
     }
 }

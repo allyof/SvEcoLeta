@@ -16,8 +16,8 @@ public class Cliente {
         // Menu interativo
         while (true) {
             System.out.println("\n=== Menu EcoLeta ===");;
-            System.out.println("\n1. Consultar ponto por nome");
-            System.out.println("2. Listar todos os pontos");
+            System.out.println("\n1. Consultar ponto de coleta por nome");
+            System.out.println("2. Listar todos os pontos de coleta");
             System.out.println("\n---------------------");
             System.out.println("\nAdministração: ");
             System.out.println("3. Adicionar ponto de coleta");
@@ -25,14 +25,14 @@ public class Cliente {
             System.out.println("4. Sair");
             String opcao = scanner.nextLine();
 
-            if (opcao.equals("3")) {
+            if (opcao.equals("3")) { //Acesso de administração
                 System.out.print("Digite a senha de administrador: ");
                 String senha = scanner.nextLine();
                     if (!senha.equals("admin1234")) {
                         System.out.println("Senha incorreta. Acesso negado.");
                         continue;
                     }
-                System.out.print("Nome do posto de coleta (preferencia minusculo): ");
+                System.out.print("Nome do posto de coleta (preferencia minusculo): "); //Adicionar pontos de coleta
                 String nome = scanner.nextLine();
                 System.out.print("Endereço do posto de coleta: ");
                 String endereco = scanner.nextLine();
@@ -41,8 +41,8 @@ public class Cliente {
                 saida.println("ADICIONAR " + nome + ";" + endereco + ";" + materiais);
                 System.out.println(entrada.readLine());
 
-            } else if (opcao.equals("1")) {
-                System.out.print("Nome do ponto (necessario que o ponto esteja escrito corretamente): ");
+            } else if (opcao.equals("1")) { //Consulta por nome
+                System.out.print("Nome do ponto de coleta(necessario que o ponto esteja escrito corretamente): ");
                 String nome = scanner.nextLine();
                 saida.println("PESQUISAR " + nome);
                 String resposta = entrada.readLine();
@@ -57,7 +57,7 @@ public class Cliente {
                     System.out.println("Ponto de coleta não encontrado.");
                 }   
 
-            } else if (opcao.equals("2")) {
+            } else if (opcao.equals("2")) { //Listar todos os pontos
                 saida.println("LISTAR");
                 System.out.println("\nLista de pontos de coleta:\n");
 
@@ -65,14 +65,14 @@ public class Cliente {
                 int cont = 1;
                 while (!(linha = entrada.readLine()).equals("EOF")) {
                     String[] dados = linha.split(";");
-                    System.out.println("Ponto #" + cont++);
+                    System.out.println("Ponto de coleta #" + cont++);
                     System.out.println("Nome: " + dados[0]);
                     System.out.println("Endereço: " + dados[1]);
                     System.out.println("Materiais aceitos: " + dados[2]);
                     System.out.println("------------------------" );
                 }
 
-            } else if (opcao.equals("4")) {
+            } else if (opcao.equals("4")) { //finalizar
                 socket.close();
                 break;
             }
