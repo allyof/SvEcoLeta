@@ -15,14 +15,17 @@ public class Cliente {
 
         // Menu interativo
         while (true) {
-            System.out.println("\n=== Menu EcoLeta ===");
-            System.out.println("\n1. Cadastrar ponto de coleta (administrativo)");
-            System.out.println("2. Consultar ponto por nome");
-            System.out.println("3. Listar todos os pontos");
+            System.out.println("\n=== Menu EcoLeta ===");;
+            System.out.println("\n1. Consultar ponto por nome");
+            System.out.println("2. Listar todos os pontos");
+            System.out.println("\n---------------------");
+            System.out.println("\nAdministração: ");
+            System.out.println("3. Adicionar ponto de coleta");
+            System.out.println("\n---------------------");        
             System.out.println("4. Sair");
             String opcao = scanner.nextLine();
 
-            if (opcao.equals("1")) {
+            if (opcao.equals("3")) {
                 System.out.print("Digite a senha de administrador: ");
                 String senha = scanner.nextLine();
                     if (!senha.equals("admin1234")) {
