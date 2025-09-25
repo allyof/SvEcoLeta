@@ -41,7 +41,7 @@ public class Cliente {
                 saida.println("ADICIONAR " + nome + ";" + endereco + ";" + materiais);
                 System.out.println(entrada.readLine());
 
-            } else if (opcao.equals("2")) {
+            } else if (opcao.equals("1")) {
                 System.out.print("Nome do ponto (necessario que o ponto esteja escrito corretamente): ");
                 String nome = scanner.nextLine();
                 saida.println("PESQUISAR " + nome);
@@ -57,7 +57,7 @@ public class Cliente {
                     System.out.println("Ponto de coleta não encontrado.");
                 }   
 
-            } else if (opcao.equals("3")) {
+            } else if (opcao.equals("2")) {
                 saida.println("LISTAR");
                 System.out.println("\nLista de pontos de coleta:\n");
 
